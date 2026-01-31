@@ -3,12 +3,13 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import status, permissions
 from rest_framework.generics import get_object_or_404
 from .models import Fundraiser, Pledge
-from .serializers import FundraiserSerializer, PledgeSerializer
-
+from .serializers import FundraiserSerializer, PledgeSerializer, FundraiserDetailSerializer
 class FundraiserList(APIView):
+
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get(self, request):
         fundraisers = Fundraiser.objects.all()
@@ -35,6 +36,22 @@ class FundraiserDetail(APIView):
         fundraiser = get_object_or_404(Fundraiser, pk=pk)
         serializer = FundraiserSerializer(fundraiser)
         return Response(serializer.data)
+    
+    def put(self, request, pk):
+        fundraiser = get_object_or_404(Fundraiser, pk=pk)
+        serializer = FundraiserDetailSerializer(
+            instance=fundraiser,
+            data=request.data, 
+            partial=True
+        )
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        
+        return Response(
+            serializer.errors,
+            status=status.HTTP_404_BAD_REQUEST        )
+        
 
 class PledgeList(APIView):
     def get(self, request):
@@ -54,3 +71,5 @@ class PledgeList(APIView):
             status.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
