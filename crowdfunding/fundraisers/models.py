@@ -7,6 +7,7 @@ class Fundraiser(models.Model):
     description = models.TextField()
     goal = models.IntegerField()
     image = models.URLField()
+    video = models.URLField(blank=True) #optional 
     is_open = models.BooleanField()
     date_created = models.DateTimeField(auto_now_add=True)
 

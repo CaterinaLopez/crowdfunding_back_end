@@ -11,6 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv("../.env")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,20 +23,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
-
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_kEY',
+    'django-insecure-gkn7dzcka^r!p8pld9)o9il%)mbyack0mua+4b01p(xi(77l-6'
+)
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gkn7dzcka^r!p8pld9)o9il%)mbyack0mua+4b01p(xi(77l-6'
+# SECRET_KEY = 'django-insecure-gkn7dzcka^r!p8pld9)o9il%)mbyack0mua+4b01p(xi(77l-6'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = os.environ.get(
+    'DJANGO_DEBUG'
+) != 'False'
+ALLOWED_HOSTS = ['*']
+CORS_ORIGIN_ALLOW_ALL = True
 # Application definition
 
 INSTALLED_APPS = [
     'fundraisers.apps.FundraisersConfig',
     'users.apps.UsersConfig',
     'rest_framework',
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
